@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Snake | Premium Edition</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -86,36 +86,16 @@
                         </button>
                     </div>
 
-                    <!-- Instructions -->
-                    <div class="instructions">
-                        <h3><i class="fas fa-info-circle"></i> HOW TO PLAY</h3>
-                        <div class="instruction-item">
-                            <div class="key-icon"><i class="fas fa-arrow-up"></i></div>
-                            <p>Use <strong>ARROW KEYS</strong> or <strong>WASD</strong> to control the snake</p>
-                        </div>
-                        <div class="instruction-item">
-                            <div class="key-icon"><i class="fas fa-space-awesome"></i></div>
-                            <p>Press <strong>SPACEBAR</strong> to pause/resume</p>
-                        </div>
-                        <div class="instruction-item">
-                            <div class="key-icon"><i class="fas fa-apple-alt"></i></div>
-                            <p>Eat the <strong>FOOD</strong> to grow and earn points</p>
-                        </div>
-                        <div class="instruction-item">
-                            <div class="key-icon"><i class="fas fa-skull-crossbones"></i></div>
-                            <p>Avoid walls and yourself!</p>
-                        </div>
-                    </div>
-
-                    <!-- Mobile Touch Controls -->
+                    <!-- Mobile Touch Controls - Always visible on mobile -->
                     <div class="touch-controls">
-                        <h3><i class="fas fa-mobile-alt"></i> TOUCH CONTROLS</h3>
+                        <h3><i class="fas fa-gamepad"></i> CONTROLS</h3>
                         <div class="touch-grid">
                             <div class="touch-btn" id="up-btn"><i class="fas fa-arrow-up"></i></div>
                             <div class="touch-btn" id="left-btn"><i class="fas fa-arrow-left"></i></div>
                             <div class="touch-btn" id="down-btn"><i class="fas fa-arrow-down"></i></div>
                             <div class="touch-btn" id="right-btn"><i class="fas fa-arrow-right"></i></div>
                         </div>
+                        <p class="mobile-instructions">Use arrow keys on desktop or touch buttons on mobile</p>
                     </div>
                 </div>
             </div>
@@ -134,8 +114,9 @@
                     <i class="fas fa-play"></i> START GAME
                 </button>
                 <div class="overlay-instructions">
-                    <p><i class="fas fa-keyboard"></i> Use <strong>Arrow Keys</strong> or <strong>WASD</strong></p>
-                    <p><i class="fas fa-mobile-alt"></i> Or use <strong>Touch Controls</strong> on mobile</p>
+                    <p><i class="fas fa-keyboard"></i> <strong>Desktop:</strong> Use Arrow Keys or WASD</p>
+                    <p><i class="fas fa-mobile-alt"></i> <strong>Mobile:</strong> Use the control buttons</p>
+                    <p><i class="fas fa-space-awesome"></i> Press SPACE to pause/resume</p>
                 </div>
             </div>
         </div>
