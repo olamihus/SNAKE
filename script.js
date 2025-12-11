@@ -21,9 +21,7 @@ const gameState = {
     gamePaused: false,
     gameSpeed: config.initialSpeed,
     foodEaten: 0,
-    level: 1,
-    touchStartX: 0,
-    touchStartY: 0
+    level: 1
 };
 
 // DOM Elements
@@ -108,15 +106,11 @@ function setupEventListeners() {
     elements.playAgainBtn.addEventListener('click', resetGame);
     elements.backToMenuBtn.addEventListener('click', showStartScreen);
     
-    // Touch Controls
+    // Touch Controls (buttons only - no swipe)
     elements.upBtn.addEventListener('click', () => changeDirection('up'));
     elements.leftBtn.addEventListener('click', () => changeDirection('left'));
     elements.downBtn.addEventListener('click', () => changeDirection('down'));
     elements.rightBtn.addEventListener('click', () => changeDirection('right'));
-    
-    // Touch Swipe for Mobile
-    elements.gameBoard.addEventListener('touchstart', handleTouchStart, { passive: false });
-    elements.gameBoard.addEventListener('touchmove', handleTouchMove, { passive: false });
     
     // Settings
     elements.soundToggle.addEventListener('click', toggleSound);
@@ -157,46 +151,6 @@ function handleKeyDown(e) {
             togglePause();
             break;
     }
-}
-
-// Handle Touch Input
-function handleTouchStart(e) {
-    const touch = e.touches[0];
-    gameState.touchStartX = touch.clientX;
-    gameState.touchStartY = touch.clientY;
-}
-
-function handleTouchMove(e) {
-    if (!gameState.touchStartX || !gameState.touchStartY || !gameState.gameRunning) return;
-    
-    e.preventDefault();
-    
-    const touch = e.touches[0];
-    const diffX = touch.clientX - gameState.touchStartX;
-    const diffY = touch.clientY - gameState.touchStartY;
-    
-    // Minimum swipe distance
-    if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
-    
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-        // Horizontal swipe
-        if (diffX > 0 && gameState.direction !== 'left') {
-            changeDirection('right');
-        } else if (diffX < 0 && gameState.direction !== 'right') {
-            changeDirection('left');
-        }
-    } else {
-        // Vertical swipe
-        if (diffY > 0 && gameState.direction !== 'up') {
-            changeDirection('down');
-        } else if (diffY < 0 && gameState.direction !== 'down') {
-            changeDirection('up');
-        }
-    }
-    
-    // Reset touch coordinates
-    gameState.touchStartX = 0;
-    gameState.touchStartY = 0;
 }
 
 // Change Direction
@@ -509,14 +463,12 @@ const lightThemeCSS = `
 
 .light-theme .game-board-container,
 .light-theme .control-panel,
-.light-theme .instructions,
 .light-theme .touch-controls {
     background: rgba(255, 255, 255, 0.9);
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-.light-theme .score-box,
-.light-theme .instruction-item {
+.light-theme .score-box {
     background: rgba(255, 255, 255, 0.7);
     border-color: rgba(0, 0, 0, 0.05);
 }
