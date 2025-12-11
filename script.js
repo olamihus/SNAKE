@@ -21,7 +21,8 @@ const gameState = {
     gamePaused: false,
     gameSpeed: config.initialSpeed,
     foodEaten: 0,
-    level: 1
+    level: 1,
+    gameLoop: null
 };
 
 // DOM Elements
@@ -31,11 +32,12 @@ const elements = {
     highScore: document.getElementById('high-score'),
     level: document.getElementById('level'),
     speed: document.getElementById('speed'),
+    speedPercent: document.getElementById('speed-percent'),
     foodCount: document.getElementById('food-count'),
     length: document.getElementById('length'),
+    scoreMini: document.getElementById('score-mini'),
     
     // Buttons
-    startBtn: document.getElementById('start-btn'),
     pauseBtn: document.getElementById('pause-btn'),
     restartBtn: document.getElementById('restart-btn'),
     startGameBtn: document.getElementById('start-game-btn'),
@@ -72,7 +74,7 @@ function initGame() {
     loadHighScore();
     createGameGrid();
     setupEventListeners();
-    resetGame();
+    resetGameState();
     render();
 }
 
@@ -99,14 +101,13 @@ function setupEventListeners() {
     document.addEventListener('keydown', handleKeyDown);
     
     // Button Events
-    elements.startBtn.addEventListener('click', startGame);
     elements.pauseBtn.addEventListener('click', togglePause);
     elements.restartBtn.addEventListener('click', resetGame);
-    elements.startGameBtn.addEventListener('click', startGame);
+    elements.startGameBtn.addEventListener('click', startGameFromButton);
     elements.playAgainBtn.addEventListener('click', resetGame);
     elements.backToMenuBtn.addEventListener('click', showStartScreen);
     
-    // Touch Controls (buttons only - no swipe)
+    // Touch Controls (buttons only)
     elements.upBtn.addEventListener('click', () => changeDirection('up'));
     elements.leftBtn.addEventListener('click', () => changeDirection('left'));
     elements.downBtn.addEventListener('click', () => changeDirection('down'));
@@ -115,6 +116,14 @@ function setupEventListeners() {
     // Settings
     elements.soundToggle.addEventListener('click', toggleSound);
     elements.themeToggle.addEventListener('click', toggleTheme);
+    
+    // Also allow spacebar to start from start screen
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && elements.startScreen.style.display !== 'none') {
+            e.preventDefault();
+            startGameFromButton();
+        }
+    });
 }
 
 // Handle Keyboard Input
@@ -155,7 +164,7 @@ function handleKeyDown(e) {
 
 // Change Direction
 function changeDirection(newDirection) {
-    if (gameState.gamePaused) return;
+    if (gameState.gamePaused || !gameState.gameRunning) return;
     gameState.nextDirection = newDirection;
     playSound(elements.moveSound);
 }
@@ -165,17 +174,44 @@ function updateDirection() {
     gameState.direction = gameState.nextDirection;
 }
 
-// Start Game
-function startGame() {
+// Start Game from Button
+function startGameFromButton() {
+    console.log('Start button clicked'); // Debug log
+    
+    // If game is already running, do nothing
     if (gameState.gameRunning) return;
+    
+    // Hide start screen
+    elements.startScreen.style.display = 'none';
+    
+    // Reset game state if needed
+    if (!gameState.gameRunning) {
+        resetGameState();
+    }
+    
+    // Start the game
+    startGame();
+}
+
+// Start Game Logic
+function startGame() {
+    console.log('Starting game...'); // Debug log
+    
+    // Clear any existing game loop
+    if (gameState.gameLoop) {
+        clearTimeout(gameState.gameLoop);
+    }
     
     gameState.gameRunning = true;
     gameState.gamePaused = false;
     
-    elements.startScreen.style.display = 'none';
+    // Hide game over screen if visible
     elements.gameOverScreen.style.display = 'none';
     
+    // Update UI
     updateUI();
+    
+    // Start the game loop
     gameLoop();
 }
 
@@ -186,21 +222,30 @@ function togglePause() {
     gameState.gamePaused = !gameState.gamePaused;
     
     if (gameState.gamePaused) {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i> RESUME';
+        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
         elements.pauseBtn.classList.remove('btn-secondary');
         elements.pauseBtn.classList.add('btn-primary');
+        
+        // Clear the game loop
+        if (gameState.gameLoop) {
+            clearTimeout(gameState.gameLoop);
+        }
     } else {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i> PAUSE';
+        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
         elements.pauseBtn.classList.remove('btn-primary');
         elements.pauseBtn.classList.add('btn-secondary');
+        
+        // Resume the game loop
         gameLoop();
     }
     
     updateUI();
 }
 
-// Reset Game
-function resetGame() {
+// Reset Game State (without starting)
+function resetGameState() {
+    console.log('Resetting game state...'); // Debug log
+    
     gameState.snake = [
         { x: 5, y: 10 },
         { x: 4, y: 10 },
@@ -216,14 +261,29 @@ function resetGame() {
     
     generateFood();
     
+    // Clear any existing game loop
+    if (gameState.gameLoop) {
+        clearTimeout(gameState.gameLoop);
+        gameState.gameLoop = null;
+    }
+    
+    // Update UI immediately
+    updateUI();
+    render();
+}
+
+// Reset Game (and start immediately)
+function resetGame() {
+    console.log('Reset game clicked'); // Debug log
+    
+    // Reset game state
+    resetGameState();
+    
+    // Hide overlays
     elements.startScreen.style.display = 'none';
     elements.gameOverScreen.style.display = 'none';
     
-    if (gameState.gameRunning) {
-        gameState.gameRunning = false;
-        clearTimeout(gameState.gameLoop);
-    }
-    
+    // Start the game
     startGame();
 }
 
@@ -236,7 +296,7 @@ function gameLoop() {
     checkCollisions();
     render();
     
-    if (gameState.gameRunning) {
+    if (gameState.gameRunning && !gameState.gamePaused) {
         gameState.gameLoop = setTimeout(gameLoop, gameState.gameSpeed);
     }
 }
@@ -322,8 +382,16 @@ function checkCollisions() {
 
 // Game Over
 function gameOver() {
+    console.log('Game Over'); // Debug log
+    
     gameState.gameRunning = false;
-    clearTimeout(gameState.gameLoop);
+    gameState.gamePaused = false;
+    
+    // Clear game loop
+    if (gameState.gameLoop) {
+        clearTimeout(gameState.gameLoop);
+        gameState.gameLoop = null;
+    }
     
     // Update final stats
     elements.finalScore.textContent = gameState.score;
@@ -374,20 +442,33 @@ function updateUI() {
     elements.level.textContent = gameState.level;
     elements.foodCount.textContent = gameState.foodEaten;
     elements.length.textContent = gameState.snake.length;
+    elements.scoreMini.textContent = gameState.score;
     
     // Update speed indicator
     const speedPercentage = Math.round((config.initialSpeed - gameState.gameSpeed) / 
         (config.initialSpeed - config.minSpeed) * 100);
-    elements.speed.textContent = `${Math.max(0, speedPercentage)}%`;
+    elements.speedPercent.textContent = `${Math.max(0, speedPercentage)}%`;
+    
+    // Update speed text
+    if (speedPercentage < 30) {
+        elements.speed.textContent = 'SLOW';
+    } else if (speedPercentage < 70) {
+        elements.speed.textContent = 'NORMAL';
+    } else {
+        elements.speed.textContent = 'FAST';
+    }
     
     // Update button states
-    elements.startBtn.disabled = gameState.gameRunning;
     elements.pauseBtn.disabled = !gameState.gameRunning;
     
     if (gameState.gamePaused) {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i> RESUME';
+        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        elements.pauseBtn.classList.remove('btn-secondary');
+        elements.pauseBtn.classList.add('btn-primary');
     } else {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i> PAUSE';
+        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        elements.pauseBtn.classList.remove('btn-primary');
+        elements.pauseBtn.classList.add('btn-secondary');
     }
 }
 
@@ -412,7 +493,7 @@ function playSound(audioElement) {
 
 function toggleSound() {
     const isSoundOn = elements.soundToggle.classList.toggle('sound-on');
-    elements.soundToggle.innerHTML = `<i class="fas fa-volume-${isSoundOn ? 'up' : 'mute'}"></i> SOUND: ${isSoundOn ? 'ON' : 'OFF'}`;
+    elements.soundToggle.innerHTML = `<i class="fas fa-volume-${isSoundOn ? 'up' : 'mute'}"></i>`;
     
     // Default to sound on
     if (!elements.soundToggle.classList.contains('sound-on')) {
@@ -422,10 +503,21 @@ function toggleSound() {
 
 function toggleTheme() {
     document.body.classList.toggle('light-theme');
-    elements.themeToggle.innerHTML = `<i class="fas fa-${document.body.classList.contains('light-theme') ? 'moon' : 'sun'}"></i> ${document.body.classList.contains('light-theme') ? 'DARK' : 'LIGHT'} MODE`;
+    elements.themeToggle.innerHTML = `<i class="fas fa-${document.body.classList.contains('light-theme') ? 'moon' : 'sun'}"></i>`;
 }
 
 function showStartScreen() {
+    console.log('Showing start screen'); // Debug log
+    
+    // Stop game if running
+    if (gameState.gameRunning) {
+        gameState.gameRunning = false;
+        if (gameState.gameLoop) {
+            clearTimeout(gameState.gameLoop);
+            gameState.gameLoop = null;
+        }
+    }
+    
     elements.startScreen.style.display = 'flex';
     elements.gameOverScreen.style.display = 'none';
 }
@@ -444,8 +536,14 @@ function saveHighScore() {
 
 // Initialize the game when page loads
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded'); // Debug log
+    
     // Default to sound on
     elements.soundToggle.classList.add('sound-on');
+    
+    // Make sure start screen is visible
+    elements.startScreen.style.display = 'flex';
+    
     initGame();
 });
 
@@ -462,13 +560,18 @@ const lightThemeCSS = `
 }
 
 .light-theme .game-board-container,
-.light-theme .control-panel,
-.light-theme .touch-controls {
+.light-theme .touch-controls,
+.light-theme .stats-container,
+.light-theme .compact-controls,
+.light-theme .speed-indicator-box,
+.light-theme .snake-info-box,
+.light-theme .game-stats {
     background: rgba(255, 255, 255, 0.9);
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-.light-theme .score-box {
+.light-theme .stat-box,
+.light-theme .mini-stat {
     background: rgba(255, 255, 255, 0.7);
     border-color: rgba(0, 0, 0, 0.05);
 }
@@ -489,6 +592,11 @@ const lightThemeCSS = `
 
 .light-theme .overlay-content p {
     color: var(--text-secondary);
+}
+
+.light-theme .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--background-dark) !important;
 }
 `;
 
