@@ -217,16 +217,16 @@ h1, h2, h3 {
 .game-board {
     width: 100%;
     aspect-ratio: 1 / 1;
-    max-width: min(85vh, 500px);
-    max-height: min(85vh, 500px);
+    max-width: min(90vh, 400px);  
+    max-height: min(90vh, 400px); 
     background: var(--grid-bg);
     border-radius: 8px;
     position: relative;
     overflow: hidden;
     border: 2px solid rgba(0, 255, 157, 0.2);
     display: grid;
-    grid-template-columns: repeat(20, 1fr);
-    grid-template-rows: repeat(20, 1fr);
+    grid-template-columns: repeat(15, 1fr);  
+    grid-template-rows: repeat(15, 1fr);    
     gap: 1px;
     padding: 1px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
@@ -287,13 +287,14 @@ h1, h2, h3 {
     position: relative;
 }
 
+/* Updated food size for 15x15 grid */
 .grid-cell.food::before {
     content: '🍎';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 0.6rem;
+    font-size: 0.8rem; 
 }
 
 @keyframes pulse {
