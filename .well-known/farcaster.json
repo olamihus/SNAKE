@@ -1,0 +1,32 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "", 
+    "signature": ""
+  },
+  "baseBuilder": {
+    "ownerAddress": ""
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Neon Snake",
+    "homeUrl": "https://snake-psi-sooty.vercel.app/",
+    "iconUrl": "https://i.imgur.com/w8HqfVu.jpeg",
+    "imageUrl": "https://i.imgur.com/w8HqfVu.jpeg",  
+    "splashImageUrl": "https://i.imgur.com/w8HqfVu.jpeg",
+    "splashBackgroundColor": "#3367D6",
+    "subtitle": "Strategic Snake Challenge",
+    "description": "Navigate the glowing grid in this fast-paced arcade thriller! Grow your neon serpent",
+    "screenshotUrls": [
+      "https://i.imgur.com/w8HqfVu.jpeg"
+    ],
+    "primaryCategory": "games",
+    "tags": ["puzzle", "strategy", "colors", "game", "fun"],
+    "heroImageUrl": "https://i.imgur.com/w8HqfVu.jpeg",
+    "tagline": "Eat. Grow. Survive. Repeat",
+    "ogTitle": "Neon Snake",
+    "ogDescription": "Navigate the glowing grid in this fast-paced arcade thriller! Grow your neon serpent",
+    "ogImageUrl": "https://i.imgur.com/w8HqfVu.jpeg",
+    "noindex": false
+  }
+}
