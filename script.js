@@ -1,6 +1,6 @@
 // Game Configuration
 const config = {
-    gridSize: 20,
+    gridSize: 15,  // Changed from 20 to 15
     initialSpeed: 200,
     minSpeed: 80,
     speedIncrease: 10,
@@ -236,10 +236,11 @@ function togglePause() {
 
 // Reset Game State (without starting)
 function resetGameState() {
+    // Adjusted starting position for 15x15 grid
     gameState.snake = [
-        { x: 5, y: 10 },
-        { x: 4, y: 10 },
-        { x: 3, y: 10 }
+        { x: 4, y: 7 },  // Adjusted from (5, 10) for 15x15
+        { x: 3, y: 7 },  // Adjusted from (4, 10) for 15x15
+        { x: 2, y: 7 }   // Adjusted from (3, 10) for 15x15
     ];
     
     gameState.direction = 'right';
