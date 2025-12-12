@@ -10,6 +10,46 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
+
+   <!-- Base Mini App Tags -->
+  <meta name="mini-app" content="embed-sdk-v1">
+  <meta name="ethereum-domain-verification" content="domainbaseorg">
+  <!-- ========== OLD FARCASTER MINI APP FORMAT (for Base.dev preview) ========== -->
+  <meta 
+    name="fc:miniapp" 
+    content='{
+      "version": "next",
+      "imageUrl": "https://i.imgur.com/qvzaD42.png",
+      "button": {
+        "title": "Play Filler Quest",
+        "action": {
+          "type": "launch_frame", 
+          "url": "https://olamihus.vercel.app/"
+        }
+      }
+    }'
+  />
+  
+  <!-- Farcaster Frame Meta Tags -->
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content="https://i.imgur.com/qvzaD42.png" />
+  <meta property="fc:frame:button:1" content="Play Filler Quest" />
+  <meta property="fc:frame:post_url" content="https://olamihus.vercel.app/" />
+  
+  <!-- Farcaster Mini App Meta Tag -->
+  <meta name="fc:miniapp" content="https://olamihus.vercel.app/" />
+  
+  <!-- Social Media Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="Filler Quest">
+  <meta property="og:description" content="Fill each board before the moves run out. A colorful puzzle game!">
+  <meta property="og:image" content="https://i.imgur.com/qvzaD42.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://olamihus.vercel.app/">
+  
+  <title>Filler Quest</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json"> 
 </head>
 <body>
     <div class="container">
@@ -180,6 +220,20 @@
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-plastic-bubble-click-1124.mp3" type="audio/mpeg">
     </audio>
 
-    <script src="script.js"></script>
+    <!-- Base Mini App SDK -->
+  <script src="https://embed-sdk.base.org/embed-sdk.js"></script>
+  
+  <!-- Farcaster Mini App SDK - THIS HIDES THE SPLASH SCREEN -->
+  <script type="module">
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
+    window.FarcasterMiniAppSDK = sdk;
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      await sdk.actions.ready();
+    });
+  </script>
+  
+  <!-- Your Game Script -->
+  <script src="script.js"></script>
 </body>
 </html>
