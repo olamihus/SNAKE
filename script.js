@@ -1,6 +1,6 @@
 // Game Configuration
 const config = {
-    gridSize: 15,  // Changed from 20 to 15
+    gridSize: 15,
     initialSpeed: 200,
     minSpeed: 80,
     speedIncrease: 10,
@@ -238,9 +238,9 @@ function togglePause() {
 function resetGameState() {
     // Adjusted starting position for 15x15 grid
     gameState.snake = [
-        { x: 4, y: 7 },  // Adjusted from (5, 10) for 15x15
-        { x: 3, y: 7 },  // Adjusted from (4, 10) for 15x15
-        { x: 2, y: 7 }   // Adjusted from (3, 10) for 15x15
+        { x: 4, y: 7 },
+        { x: 3, y: 7 },
+        { x: 2, y: 7 }
     ];
     
     gameState.direction = 'right';
@@ -474,7 +474,9 @@ function toggleSound() {
 
 function toggleTheme() {
     document.body.classList.toggle('light-theme');
-    elements.themeToggle.innerHTML = `<i class="fas fa-${document.body.classList.contains('light-theme') ? 'moon' : 'sun'}"></i>`;
+    const isLightTheme = document.body.classList.contains('light-theme');
+    elements.themeToggle.innerHTML = `<i class="fas fa-${isLightTheme ? 'moon' : 'sun'}"></i>`;
+    elements.themeToggle.title = isLightTheme ? 'Switch to Dark Mode' : 'Switch to Light Mode';
 }
 
 function showStartScreen() {
@@ -517,33 +519,229 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add light theme CSS dynamically
 const lightThemeCSS = `
 .light-theme {
-    --background-dark: #f0f2f5;
+    /* Vibrant Neon Light Theme */
+    --background-dark: #f5f7fa;
     --background-darker: #ffffff;
-    --background-light: #e4e6eb;
-    --text-primary: #1a1a2e;
+    --background-light: #e8ecf1;
+    --text-primary: #0a0a14;
     --text-secondary: #4a4a6a;
-    --grid-line: rgba(0, 0, 0, 0.05);
+    --grid-line: rgba(0, 0, 0, 0.08);
     --grid-bg: #ffffff;
+    
+    /* Keep the same neon colors but with darker shades for contrast */
+    --primary-color: #00cc7a;
+    --secondary-color: #0099cc;
+    --accent-color: #cc00a3;
+    --danger-color: #ff3366;
+    --warning-color: #ff9900;
+    --success-color: #00cc7a;
+    
+    /* Game Colors with transparency for light theme */
+    --snake-head: var(--primary-color);
+    --snake-body: #00b366;
+    --food-color: var(--accent-color);
+    
+    /* Enhanced glows for light theme */
+    --glow-primary: 0 0 12px rgba(0, 204, 122, 0.6);
+    --glow-secondary: 0 0 12px rgba(0, 153, 204, 0.6);
+    --glow-accent: 0 0 12px rgba(204, 0, 163, 0.6);
+    --glow-danger: 0 0 12px rgba(255, 51, 102, 0.6);
 }
 
-.light-theme .top-stats-bar,
-.light-theme .touch-controls-container,
-.light-theme .game-overlay {
-    background: rgba(255, 255, 255, 0.95);
+.light-theme body {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e6ebf0 100%);
+    color: var(--text-primary);
+}
+
+/* Game Header */
+.light-theme .game-header {
+    border-bottom: 2px solid rgba(0, 204, 122, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin: 8px;
+    padding: 10px 15px;
+}
+
+.light-theme .logo i {
+    color: var(--primary-color);
+    filter: drop-shadow(var(--glow-primary));
+}
+
+.light-theme .logo h1 {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.light-theme .logo h1 span {
+    color: var(--accent-color);
+}
+
+.light-theme .btn-icon.small {
+    background: rgba(0, 204, 122, 0.1);
+    border: 1px solid rgba(0, 204, 122, 0.2);
+    color: var(--primary-color);
+}
+
+.light-theme .btn-icon.small:hover {
+    background: rgba(0, 204, 122, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: var(--glow-primary);
+}
+
+/* Stats Bar */
+.light-theme .top-stats-bar {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    padding: 10px;
+    margin: 0 8px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .light-theme .stat-item {
     background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 204, 122, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .stat-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 204, 122, 0.15), var(--glow-primary);
+}
+
+.light-theme .stat-icon {
+    background: rgba(0, 204, 122, 0.15);
+    color: var(--primary-color);
+}
+
+.light-theme .stat-item:nth-child(2) .stat-icon {
+    background: rgba(255, 153, 0, 0.15);
+    color: var(--warning-color);
+}
+
+.light-theme .stat-item:nth-child(3) .stat-icon {
+    background: rgba(0, 153, 204, 0.15);
+    color: var(--secondary-color);
+}
+
+.light-theme .stat-item:nth-child(4) .stat-icon {
+    background: rgba(204, 0, 163, 0.15);
+    color: var(--accent-color);
+}
+
+/* Game Board */
+.light-theme .game-board {
+    background: var(--grid-bg);
+    border: 2px solid rgba(0, 204, 122, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1), 0 0 20px rgba(0, 204, 122, 0.1);
+}
+
+.light-theme .game-board::before {
+    background: linear-gradient(45deg, 
+        transparent 0%, 
+        rgba(0, 204, 122, 0.05) 50%, 
+        transparent 100%);
+}
+
+.light-theme .grid-cell {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.light-theme .grid-cell.snake-head {
+    background: var(--snake-head);
+    box-shadow: var(--glow-primary), inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.light-theme .grid-cell.snake-body {
+    background: var(--snake-body);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .grid-cell.food {
+    background: var(--accent-color);
+    box-shadow: var(--glow-accent);
+}
+
+/* Controls Area */
+.light-theme .controls-area {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 0 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+.light-theme .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 204, 122, 0.3);
+}
+
+.light-theme .btn-primary:hover {
+    box-shadow: 0 6px 18px rgba(0, 204, 122, 0.4), var(--glow-primary);
 }
 
 .light-theme .btn-secondary {
-    background: rgba(0, 0, 0, 0.05);
-    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 204, 122, 0.3);
+    color: var(--primary-color);
+}
+
+.light-theme .btn-secondary:hover {
+    background: rgba(0, 204, 122, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: var(--glow-primary);
+}
+
+.light-theme .btn-warning {
+    background: linear-gradient(135deg, var(--warning-color), #ff6600);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+}
+
+.light-theme .btn-warning:hover {
+    box-shadow: 0 6px 18px rgba(255, 153, 0, 0.4);
+}
+
+/* Touch Controls */
+.light-theme .touch-controls-container {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 204, 122, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .touch-btn {
+    background: rgba(0, 204, 122, 0.1);
+    border: 1px solid rgba(0, 204, 122, 0.2);
+    color: var(--primary-color);
+}
+
+.light-theme .touch-btn:hover, .light-theme .touch-btn:active {
+    background: rgba(0, 204, 122, 0.25);
+    border-color: var(--primary-color);
+    box-shadow: var(--glow-primary);
+}
+
+.light-theme .mobile-hint {
+    color: var(--text-secondary);
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Overlay Screens */
+.light-theme .game-overlay {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
 }
 
 .light-theme .overlay-content {
-    background: linear-gradient(145deg, #ffffff, #f0f2f5);
+    background: linear-gradient(145deg, #ffffff, #f5f7fa);
+    border: 2px solid rgba(0, 204, 122, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 0 30px rgba(0, 204, 122, 0.1);
     color: var(--text-primary);
 }
 
@@ -551,19 +749,37 @@ const lightThemeCSS = `
     color: var(--text-secondary);
 }
 
-.light-theme .game-board {
-    background: var(--grid-bg);
-    border-color: rgba(0, 0, 0, 0.2);
+.light-theme .overlay-instructions {
+    border-top-color: rgba(0, 0, 0, 0.1);
 }
 
-.light-theme .touch-btn {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.1);
+.light-theme .game-over-stats {
+    background: rgba(0, 204, 122, 0.08);
+    border: 1px solid rgba(0, 204, 122, 0.15);
 }
 
-.light-theme .touch-btn:hover, .light-theme .touch-btn:active {
-    background: rgba(0, 255, 157, 0.15);
-    border-color: var(--primary-color);
+.light-theme .game-over-stats .stat p {
+    color: var(--text-secondary);
+}
+
+/* Footer */
+.light-theme .game-footer {
+    border-top-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-secondary);
+}
+
+.light-theme .game-footer i {
+    color: var(--danger-color);
+}
+
+/* Score Update Animation */
+.light-theme .score-update {
+    animation: scorePop 0.3s ease;
+}
+
+/* Container Background */
+.light-theme .container {
+    background: transparent;
 }
 `;
 
