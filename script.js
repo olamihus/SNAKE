@@ -31,11 +31,7 @@ const elements = {
     score: document.getElementById('score'),
     highScore: document.getElementById('high-score'),
     level: document.getElementById('level'),
-    speed: document.getElementById('speed'),
-    speedPercent: document.getElementById('speed-percent'),
     foodCount: document.getElementById('food-count'),
-    length: document.getElementById('length'),
-    scoreMini: document.getElementById('score-mini'),
     
     // Buttons
     pauseBtn: document.getElementById('pause-btn'),
@@ -176,8 +172,6 @@ function updateDirection() {
 
 // Start Game from Button
 function startGameFromButton() {
-    console.log('Start button clicked'); // Debug log
-    
     // If game is already running, do nothing
     if (gameState.gameRunning) return;
     
@@ -195,8 +189,6 @@ function startGameFromButton() {
 
 // Start Game Logic
 function startGame() {
-    console.log('Starting game...'); // Debug log
-    
     // Clear any existing game loop
     if (gameState.gameLoop) {
         clearTimeout(gameState.gameLoop);
@@ -222,18 +214,18 @@ function togglePause() {
     gameState.gamePaused = !gameState.gamePaused;
     
     if (gameState.gamePaused) {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        elements.pauseBtn.classList.remove('btn-secondary');
-        elements.pauseBtn.classList.add('btn-primary');
+        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i><span>RESUME</span>';
+        elements.pauseBtn.classList.remove('btn-primary');
+        elements.pauseBtn.classList.add('btn-secondary');
         
         // Clear the game loop
         if (gameState.gameLoop) {
             clearTimeout(gameState.gameLoop);
         }
     } else {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        elements.pauseBtn.classList.remove('btn-primary');
-        elements.pauseBtn.classList.add('btn-secondary');
+        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i><span>PAUSE</span>';
+        elements.pauseBtn.classList.remove('btn-secondary');
+        elements.pauseBtn.classList.add('btn-primary');
         
         // Resume the game loop
         gameLoop();
@@ -244,8 +236,6 @@ function togglePause() {
 
 // Reset Game State (without starting)
 function resetGameState() {
-    console.log('Resetting game state...'); // Debug log
-    
     gameState.snake = [
         { x: 5, y: 10 },
         { x: 4, y: 10 },
@@ -274,8 +264,6 @@ function resetGameState() {
 
 // Reset Game (and start immediately)
 function resetGame() {
-    console.log('Reset game clicked'); // Debug log
-    
     // Reset game state
     resetGameState();
     
@@ -382,8 +370,6 @@ function checkCollisions() {
 
 // Game Over
 function gameOver() {
-    console.log('Game Over'); // Debug log
-    
     gameState.gameRunning = false;
     gameState.gamePaused = false;
     
@@ -441,34 +427,18 @@ function updateUI() {
     elements.highScore.textContent = gameState.highScore;
     elements.level.textContent = gameState.level;
     elements.foodCount.textContent = gameState.foodEaten;
-    elements.length.textContent = gameState.snake.length;
-    elements.scoreMini.textContent = gameState.score;
-    
-    // Update speed indicator
-    const speedPercentage = Math.round((config.initialSpeed - gameState.gameSpeed) / 
-        (config.initialSpeed - config.minSpeed) * 100);
-    elements.speedPercent.textContent = `${Math.max(0, speedPercentage)}%`;
-    
-    // Update speed text
-    if (speedPercentage < 30) {
-        elements.speed.textContent = 'SLOW';
-    } else if (speedPercentage < 70) {
-        elements.speed.textContent = 'NORMAL';
-    } else {
-        elements.speed.textContent = 'FAST';
-    }
     
     // Update button states
     elements.pauseBtn.disabled = !gameState.gameRunning;
     
     if (gameState.gamePaused) {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        elements.pauseBtn.classList.remove('btn-secondary');
-        elements.pauseBtn.classList.add('btn-primary');
-    } else {
-        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i><span>RESUME</span>';
         elements.pauseBtn.classList.remove('btn-primary');
         elements.pauseBtn.classList.add('btn-secondary');
+    } else {
+        elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i><span>PAUSE</span>';
+        elements.pauseBtn.classList.remove('btn-secondary');
+        elements.pauseBtn.classList.add('btn-primary');
     }
 }
 
@@ -507,8 +477,6 @@ function toggleTheme() {
 }
 
 function showStartScreen() {
-    console.log('Showing start screen'); // Debug log
-    
     // Stop game if running
     if (gameState.gameRunning) {
         gameState.gameRunning = false;
@@ -536,8 +504,6 @@ function saveHighScore() {
 
 // Initialize the game when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded'); // Debug log
-    
     // Default to sound on
     elements.soundToggle.classList.add('sound-on');
     
@@ -559,30 +525,20 @@ const lightThemeCSS = `
     --grid-bg: #ffffff;
 }
 
-.light-theme .game-board-container,
-.light-theme .touch-controls,
-.light-theme .stats-container,
-.light-theme .compact-controls,
-.light-theme .speed-indicator-box,
-.light-theme .snake-info-box,
-.light-theme .game-stats {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(0, 0, 0, 0.1);
+.light-theme .top-stats-bar,
+.light-theme .touch-controls-container,
+.light-theme .game-overlay {
+    background: rgba(255, 255, 255, 0.95);
 }
 
-.light-theme .stat-box,
-.light-theme .mini-stat {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: rgba(0, 0, 0, 0.05);
+.light-theme .stat-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .light-theme .btn-secondary {
     background: rgba(0, 0, 0, 0.05);
     color: var(--text-primary);
-}
-
-.light-theme .game-overlay {
-    background: rgba(255, 255, 255, 0.95);
 }
 
 .light-theme .overlay-content {
@@ -594,9 +550,19 @@ const lightThemeCSS = `
     color: var(--text-secondary);
 }
 
-.light-theme .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: var(--background-dark) !important;
+.light-theme .game-board {
+    background: var(--grid-bg);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .touch-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .touch-btn:hover, .light-theme .touch-btn:active {
+    background: rgba(0, 255, 157, 0.15);
+    border-color: var(--primary-color);
 }
 `;
 
